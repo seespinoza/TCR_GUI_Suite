@@ -32,7 +32,7 @@ TCR-dist.
    NETWORK_INTERFACE with the IP address obtained above.
 
 These steps are better outlined in the following article.
-
+https://cntnr.io/running-guis-with-docker-on-mac-os-x-a14df6a76efc
 ## Ubuntu Users
  1) Install Docker: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository
 
