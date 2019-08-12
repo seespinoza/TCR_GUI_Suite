@@ -28,7 +28,7 @@ TCR-dist.
    Open Xquartz using `open -a Xquartz` and go into the security tab and check "Allow connections from network clients"
    
 4) Run the command `ifcongfig en0` and copy the network interface IP. 
-   Now run `sudo docker run -e DISPLAY=NETWORK_INTERFACE:0 -v ~:/home/developer/ seespinoza/memecos:2` and make sure to replace
+   Now run `sudo docker run -e DISPLAY=NETWORK_INTERFACE:0 -v ~:/home/developer/ seespinoza/memecos` and make sure to replace
    NETWORK_INTERFACE with the IP address obtained above.
 
 These steps are better outlined in the following article.
@@ -36,4 +36,8 @@ https://cntnr.io/running-guis-with-docker-on-mac-os-x-a14df6a76efc
 ## Ubuntu Users
  1) Install Docker: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository
 
- 2) `sudo docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v ~:/home/developer/ seespinoza/memecos:2`
+ 2) `sudo docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v ~:/home/developer/ seespinoza/memecos`
+
+
+# Docker Page
+https://hub.docker.com/r/seespinoza/memecos
