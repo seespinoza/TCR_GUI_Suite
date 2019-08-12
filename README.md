@@ -28,7 +28,7 @@ TCR-dist.
    Open Xquartz using `open -a Xquartz` and go into the security tab and check "Allow connections from network clients"
    
 4) Run the command `ifcongfig en0` and copy the network interface IP. 
-   Now run `sudo docker run -e DISPLAY=NETWORK_INTERFACE:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~:/home/developer/ seespinoza/memecos:2` and make sure to replace
+   Now run `sudo docker run -e DISPLAY=NETWORK_INTERFACE:0 -v ~:/home/developer/ seespinoza/memecos:2` and make sure to replace
    NETWORK_INTERFACE with the IP address obtained above.
 
 These steps are better outlined in the following article.
