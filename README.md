@@ -21,7 +21,19 @@ TCR-dist.
    the steps found on the official Docker website and install Docker: 
    https://docs.docker.com/docker-for-mac/install/
 
-2) Download the github repository. You can do this `test`
+2) Download the github repository. You can do this by runnning `git clone https://github.com/seespinoza/TCR_GUI_Suite.git`
 
+3) Install socat using brew: `brew install socat`. And run this command `socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"`.
+   Install Xquartz using `brew install xquartz` and login and logout of OSX to make sure everything is working correctly.
+   Open Xquartz using `open -a Xquartz` and go into the security tab and check "Allow connections from network clients"
+   
+4) Run the command `ifcongfig en0` and copy the network interface IP. 
+   Now run `sudo docker run -e DISPLAY=NETWORK_INTERFACE:0 -v /tmp/.X11-unix:/tmp/.X11-unix -v ~:/home/developer/ seespinoza/memecos:2` and make sure to replace
+   NETWORK_INTERFACE with the IP address obtained above.
 
- - Ubuntu: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository
+These steps are better outlined in the following article.
+
+## Ubuntu Users
+ 1) Install Docker: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository
+
+ 2) `sudo docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v ~:/home/developer/ seespinoza/memecos:2`
