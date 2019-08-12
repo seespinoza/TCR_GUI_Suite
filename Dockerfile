@@ -74,5 +74,5 @@ RUN chmod -R 777 /opt/
 USER developer
 ENV HOME /home/developer
 
-#ENTRYPOINT ["/usr/bin/python3"]
-#CMD ["memecos/tkinterSandBox.py"] 
+ENTRYPOINT ["/usr/bin/python3"]
+CMD ["memecos/tkinterSandBox.py"] 
