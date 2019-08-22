@@ -7,10 +7,14 @@ from PIL import Image as Imag
 from PIL import ImageTk
 import os
 import re
+import threading
+import itertools
+import time
 
 LARGE_FONT = ('OpenSymbol', 12)
 MEDIUM_FONT = ()
 SMALL_FONT = ('OpenSymbol', 5)
+LOADING_PROCESS = False
 
 # main app
 class FUSE_GUI(Tk):
@@ -28,7 +32,7 @@ class FUSE_GUI(Tk):
 
         self.frames = { }
 
-        for F in (StartPage, MEMEStart, CircosStart):
+        for F in (StartPage, MEMEStart, CircosStart, TCR_Dist):
             frame = F(container, self)
 
             self.frames[F] = frame
@@ -41,8 +45,6 @@ class FUSE_GUI(Tk):
 
         frame = self.frames[cont]
         frame.tkraise()
-
-
 
 
 def pop_up_msg():
@@ -80,12 +82,25 @@ def pop_up_img(plot):
     popup.mainloop()
 
 
+def get_File_Name(updateLabelText):
+    home = os.path.expanduser('~')
+    filename = filedialog.askopenfilename(initialdir=home)
+    if filename:
+        updateLabelText.set(filename)
+
 def num_only(input):
     try:
         if input is '' or int(input) >= 0:
             return True
     except ValueError:
         return False
+
+def save_dir(OutputDir):
+    home = os.path.expanduser('~')
+    dirName = filedialog.askdirectory(initialdir=home)
+    if dirName:
+        os.system('cp ' + OutputDir + '* ' + dirName)
+
 
 # GUI Splash page
 class StartPage(Frame):
@@ -96,32 +111,28 @@ class StartPage(Frame):
         label.pack(pady=0,padx=0)
 
         self.photoM = PhotoImage(file='/memecos/MEME.png')
-        button1 = Button(self, text='Visit MEME', command=lambda: controller.show_frame(MEMEStart)
-                             , height=150, width=500, image = self.photoM)
-        button1.pack()
+        MEMEButton = Button(self, text='Visit MEME', command=lambda: controller.show_frame(MEMEStart),
+                            height=150, width=500, image = self.photoM)
+        MEMEButton.pack()
         
         self.photoC = PhotoImage(file='/memecos/CIRCOS.png')
-        button2 = Button(self, text='Visit Circos', command=lambda: controller.show_frame(CircosStart)
-                         , height=150, width=500, image=self.photoC)
-        button2.pack()
+        CIRCOSButton = Button(self, text='Visit Circos', command=lambda: controller.show_frame(CircosStart),
+                              height=150, width=500, image=self.photoC)
+        CIRCOSButton.pack()
 
+        TCRDistButton = Button(self, text='Visit TCR-Dist', command=lambda: controller.show_frame(TCR_Dist),
+                               height=150, width=500)
+        TCRDistButton.pack()
 
 # MEME main Page
 class MEMEStart(Frame):
     def run_MEME(self, disMode, alpha, filePath, site, motifNo):
         siteVar = site.get().split('(')[1][:-1]
-        os.system('./meme/bin/meme -objfun ' + disMode.get() + ' -'
+        os.system('./opt/meme/bin/meme -objfun ' + disMode.get() + ' -'
                   + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get())
 
-        print('./meme/bin/meme -objfun ' + disMode.get() + ' -'
-              + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get())
-
-    def get_File_Name(self, updateLabelText):
-        home = os.path.expanduser('~')
-        filename = filedialog.askopenfilename(initialdir=home)
-        if filename:
-            updateLabelText.set(filename.split('/')[-1])
-
+        #print('./meme/bin/meme -objfun ' + disMode.get() + ' -'
+              #+ alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get())
     def increaseArrow(self, num):
         try:
             num.set(num.get() + 1)
@@ -194,7 +205,7 @@ class MEMEStart(Frame):
         fileLabel.grid(row=2, column=0, pady=2, padx=2, sticky='w')
 
         primarySeqButtom = ttk.Button(primarySequences, text='Browse...',
-                                      command=lambda: self.get_File_Name(self.filePathVar))
+                                      command=lambda: get_File_Name(self.filePathVar))
         primarySeqButtom.grid(row=2, column=2, pady=2, padx=2, sticky='e')
 
         # Site distribution label frame
@@ -271,14 +282,6 @@ class MEMEStart(Frame):
         backHomeMEME.grid(row=1000, column=1, pady=20)
 
 class CircosStart(Frame):
-
-    def get_File_Name(self, updateLabelText, fileLabel):
-        home = os.path.expanduser('~')
-        filename = filedialog.askopenfilename(initialdir=home)
-        if filename:
-            fileLabel.config(text=filename.split('/')[-1])
-            updateLabelText.set(filename)
-
     def edit_Ideogram(self, labelSize, labelOr, ideoThick, labelPos):
         ideoPath = '/opt/circos/etc/'
         os.system('sudo chmod -R 777 /opt/')
@@ -352,8 +355,7 @@ class CircosStart(Frame):
         os.system('sudo cp ' + cTools + '/etc/* ' + cPath + '/etc')
 
         try:
-            os.system('sudo rm ' + TSVHead + '.parsed ' + TSVfile + ' ' + TSVHead + '.tsv && echo "deleted"')
-            os.system('ls -al')
+            os.system('sudo rm ' + TSVHead + '.parsed ' + TSVfile + ' ' + TSVHead + '.tsv')
         except:
             print('no files to delete')
 
@@ -367,6 +369,8 @@ class CircosStart(Frame):
 
         # Else if a TSV file is selected edit conf files and run Circos
         else:
+
+            # Clear out any error message
             circosStatus.set('')
             runStatus.config(bg='#d9d9d9')
 
@@ -380,15 +384,20 @@ class CircosStart(Frame):
             self.edit_Circos_Conf(linkSize)
 
             os.system('sudo perl /opt/circos/bin/circos -conf /opt/circos/etc/circos.conf -noshow_ticks')
-
+            # Destroy the loading screen frame after the process has finished
 
             try:
-                self.circosPlot = ImageTk.PhotoImage(Imag.open('/memecos/circos_output/img/tableview.png').resize((1100, 1100),
-                                                                                                       Imag.ANTIALIAS))
-                plotPreviewLabel = ttk.Button(self, text='Preview Circos Plot',
+                circosPlotDir = '/memecos/circos_output/img/'
+                self.circosPlot = ImageTk.PhotoImage(Imag.open(circosPlotDir + 'tableview.png').resize((1100, 1100),Imag.ANTIALIAS))
+
+                plotPreviewButton = Button(self, text='Preview Circos Plot',
                                               command=lambda: pop_up_img(self.circosPlot))
 
-                plotPreviewLabel.grid(row=5, column=1, pady=2, padx=2, sticky='e')
+                plotPreviewButton.grid(row=6, column=0, pady=2, padx=2, sticky='e')
+
+                plotSaveButton = Button(self, text='Save Files', command=lambda: save_dir(circosPlotDir),
+                                        bg='medium sea green')
+                plotSaveButton.grid(row=6, column=1, pady=2, padx=2, sticky='e')
             except FileNotFoundError:
                 pass
 
@@ -405,11 +414,11 @@ class CircosStart(Frame):
         self.cirFilePathVar = StringVar()
         self.cirFilePathVar.set('No file selected.')
 
-        circosFileLabelStatus = Label(circosFileSelect, text='No file selected', bg='gray')
+        circosFileLabelStatus = Label(circosFileSelect, textvariable=self.cirFilePathVar, bg='gray')
         circosFileLabelStatus.grid(row=1, column=0, padx=2, pady=2, sticky='w')
 
         circosFileButton = ttk.Button(circosFileSelect, text='Browse...',
-                                      command=lambda: self.get_File_Name(self.cirFilePathVar, circosFileLabelStatus))
+                                      command=lambda: get_File_Name(self.cirFilePathVar))
 
         circosFileButton.grid(row=1, column=1, pady=2, padx=2, sticky='e')
 
@@ -471,7 +480,7 @@ class CircosStart(Frame):
 
         # Minimum link size filter
         self.linkSize = IntVar()
-        self.linkSize.set(200)
+        self.linkSize.set(0)
         labelLinkSize = ttk.Label(advancedCircosSettings, text='Enter minimum link size: ')
         labelLinkSize.grid(row=4, column=0, pady=2, padx=2, sticky='w')
 
@@ -495,12 +504,36 @@ class CircosStart(Frame):
                                                                                         self.cirFilePathVar,
                                                                                         self.circosStatus))
 
-
-
         runCircos.grid(row=5, column=0, pady=2, padx=2, sticky='w')
 
         backHomeCircos = ttk.Button(self, text='Back to Home', command=lambda: controller.show_frame(StartPage))
         backHomeCircos.grid(row=1000, column=1, pady=20)
 
+class TCR_Dist(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+
+        pairSeqLabelFrame = ttk.LabelFrame(self, text='Choose a pair sequences file')
+        pairSeqLabelFrame.grid(row=0, column=0, pady=2, padx=2)
+
+        self.pairSeqPathVar = StringVar()
+        self.pairSeqPathVar.set('No file selected.')
+
+        circosFileLabelStatus = Label(pairSeqLabelFrame, textvariable=self.pairSeqPathVar, bg='gray')
+        circosFileLabelStatus.grid(row=0, column=0, padx=2, pady=2, sticky='w')
+
+        pairSeqFileButton = ttk.Button(pairSeqLabelFrame, text='Browse...',
+                                       command=lambda: get_File_Name(self.pairSeqPathVar))
+        pairSeqFileButton.grid(row=0, column=1, pady=2, padx=2, sticky='e')
+
+        self.pairSeqAmount = IntVar()
+        self.pairSeqAmount.set(100)
+        pairSeqScale = Scale(pairSeqLabelFrame, label='Select amount of sequence to analyze',
+                             variable=self.pairSeqAmount, sliderlength=20, orient=HORIZONTAL,
+                             to=1000, length=300, repeatinterval=10, repeatdelay=10, resolution=100)
+        pairSeqScale.grid(column=0, row=1, pady=2)
+
+        backHomeTCR = ttk.Button(self, text='Back to Home', command=lambda: controller.show_frame(StartPage))
+        backHomeTCR.grid(row=1000, column=0, pady=20)
 app = FUSE_GUI()
 app.mainloop()
