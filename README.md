@@ -27,7 +27,7 @@ TCR-dist.
    Install Xquartz using `brew install xquartz` and login and logout of OSX to make sure everything is working correctly.
    Open Xquartz using `open -a Xquartz` and go into the security tab and check "Allow connections from network clients"
    
-4) Run the command `ifcongfig en0` and copy the network interface IP. 
+4) Run the command `ifconfig en0` and copy the network interface IP. 
    Now run `sudo docker run -e DISPLAY=NETWORK_INTERFACE:0 -v ~:/home/developer/ seespinoza/memecos` and make sure to replace
    NETWORK_INTERFACE with the IP address obtained above.
 
