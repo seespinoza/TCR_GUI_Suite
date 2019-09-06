@@ -34,7 +34,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	# Download and install brew
 	which -s brew 2> /dev/null
 	if  [[ $? != 0 ]]; then
-		ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	else
 		echo "updating brew"
 		brew update
