@@ -1,15 +1,12 @@
 #!/bin/bash
 
-# Checking if script is running as root
-
 # If Ubuntu install and run docker
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	echo $OSTYPE
 
 	docker -v 2> /dev/null
-
 	if [[ $? != 0 ]] ; then
-		snap install docker
+		sudo apt install docker.io
 	else
 		echo "docker already installed"
 	fi
