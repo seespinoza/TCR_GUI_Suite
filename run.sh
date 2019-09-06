@@ -4,7 +4,8 @@
 
 # If Ubuntu install and run docker
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
-	
+	echo $OSTYPE
+
 	docker -v 2> /dev/null
 
 	if [[ $? != 0 ]] ; then
