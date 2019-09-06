@@ -1,12 +1,6 @@
 #!/bin/bash
 
 # Checking if script is running as root
-if [[ $EUID -ne 0 ]]; then
-	echo -e "This script must be run as root.\nPlease type 'sudo ./run'"
-	exit 1
-else
-	echo "This script is running as root"
-fi
 
 # If Ubuntu install and run docker
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -19,12 +13,12 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 		echo "docker already installed"
 	fi
 
-	docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos
+	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos
 
 # If UBuntu install and run docker
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "this is OSX"
-	
+        echo $OSTYPE
+
 	# Download command line tools for OSX
 	if type xcode-select >&- && xpath=$( xcode-select --print-path ) && test -d "${xpath}" && test -x "${xpath}" ; then
    		echo "xcode already installed"
@@ -34,6 +28,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	# Download and install brew
 	which -s brew 2> /dev/null
 	if  [[ $? != 0 ]]; then
+		echo "installing Homebrew"
 		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	else
 		echo "updating brew"
@@ -42,6 +37,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 
 	socat -v 2> /dev/null
 	if [[ $? != 0 ]]; then
+		echo "installing socat"
 		brew install socat
 	else
 		echo "socat is already installed."
@@ -50,13 +46,16 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	# Install xquartz
 	open -a Xquartz
 	if [[ $? != 0 ]]; then
+		echo "installing xquartz"
 		brew install xquartz
+		open -a Xquartz
 	else
 		echo "xquartz already installed"
 	fi
 
 	brew info brew-cask 2> /dev/null
 	if [[ $? != 0 ]]; then
+		echo "installing Homebrew Cask"
 		brew install caskroom/cask/brew-cask
 	else
 		echo "cask is already installed"
@@ -64,16 +63,19 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 
 	docker -v 2> /dev/null
 	if [[ $? != 0 ]]; then
+		echo "installing Docker"
 		brew cask install docker
 	else
 		echo "docker is already installed"
 	fi
-
-	socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\"
+	
+	socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\" &
 
 	defaults write org.macosforge.xquartz.X11.plist nolisten_tcp 0
 
 	IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
+	
+	open /Applications/Docker.app
 
 	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos
 fi
