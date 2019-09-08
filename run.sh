@@ -11,7 +11,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 		echo "docker already installed"
 	fi
 
-	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos
+	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos > /dev/null
 
 # If UBuntu install and run docker
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -75,6 +75,6 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	
 	open /Applications/Docker.app
 
-	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos
+	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos > /dev/null
 fi
 
