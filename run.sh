@@ -11,7 +11,10 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 		echo "docker already installed"
 	fi
 
-	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos &> /dev/null
+	# update docker image
+	sudo docker pull seespinoza/memecos:latest
+
+	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos:latest &> /dev/null
 
 # If UBuntu install and run docker
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -74,7 +77,10 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
 	
 	open /Applications/Docker.app
+	
+	# Update docker image
+	sudo docker pull seespinoza/memecos:latest
 
-	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos &> /dev/null
+	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos:latest &> /dev/null
 fi
 
