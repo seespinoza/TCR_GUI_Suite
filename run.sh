@@ -49,7 +49,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	if [[ $? != 0 ]]; then
 		echo "installing xquartz"
 		brew install xquartz
-		open -a Xquartz
+		open -j Xquartz
 	else
 		echo "xquartz already installed"
 	fi
