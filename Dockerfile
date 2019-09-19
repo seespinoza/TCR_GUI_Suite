@@ -87,7 +87,7 @@ RUN cd /opt/ \
     && make \
     && make install 
 
-# Install tcr dist dependancies
+# Install tcr dist dependencies
 RUN apt-get update \
     && apt-get install -y python python-numpy python-scipy python-matplotlib python-pip \
     && pip install -U scikit-learn \
