@@ -27,9 +27,8 @@ TCR-dist.
    first time it is launched.
 
 ## Ubuntu Users
- 1) Install Docker: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository
-
- 2) `sudo docker run -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v ~:/home/developer/ seespinoza/memecos`
+ 1) Download the GitHub repository: `git clone https://github.com/seespinoza/TCR_GUI_Suite.git`
+ 2) Run `./run.sh`.
 
 
 # Docker Page
