@@ -20,6 +20,12 @@ TCR-dist.
 
  1) Open the Terminal app and download the GitHub repository by using the following command: `git clone https://github.com/seespinoza/TCR_GUI_Suite.git`
 
+2) Enter the folder by using this command `cd TCR_GUI_Suite.git`.
+
+3) Run the software by typing `./run.sh`. This command may take a while to finish running the first time the application is launched
+   since all software dependencies, such as Docker, will need to be downloaded. The software should boot up much faster after the
+   first time it is launched.
+
 ## Ubuntu Users
  1) Install Docker: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#set-up-the-repository
 
