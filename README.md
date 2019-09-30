@@ -22,13 +22,13 @@ TCR-dist.
  1) Download the GitHub repository by pressing the green button in the upper right-hand corner that says `Clone or download`.
     Choose `Download ZIP`.
 
- 2) Once you have opened the folder, double click on OSX_run.command to run the Tool Suite.
+ 2) Once you have opened the folder, double click on the `run.command` file to run the Tool Suite.
 
 *The software may take some time to finish running the first time since some additional software dependencies need to be installed
  Docker, xQuartz, etc)*
 ## Ubuntu Users
  1) Download the GitHub repository: `git clone https://github.com/seespinoza/TCR_GUI_Suite.git`
- 2) Run `./Linux_run.sh`.
+ 2) Run `./run.command`.
 
 
 # Docker Page
