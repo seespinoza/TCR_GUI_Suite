@@ -23,6 +23,7 @@ TCR-dist.
     Choose `Download ZIP`.
 
  2) Once you have opened the folder, double click on the `run.command` file to run the Tool Suite.
+    Make sure you have a stable internet connection the first time running the software.
 
 *The software may take some time to finish running the first time since some additional software dependencies need to be installed
  Docker, xQuartz, etc)*
