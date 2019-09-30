@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Change working directory to where this file is located
 cd -- "$(dirname "$BASH_SOURCE")"
 
 # Check if OS type is linux
@@ -35,8 +36,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 		echo "installing Homebrew"
 		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	else
-		echo "updating brew"
-		brew update
+		echo "brew is already installed."
 	fi
 
 	socat -v 2> /dev/null
@@ -81,7 +81,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	
 	open /Applications/Docker.app
 	
-	# Update docker image
+	# Update docker image (Change this to a try and catch statement in-case software is being
+        # run offline.
 	sudo docker pull seespinoza/memecos:latest
 
 	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos:latest &> /dev/null
