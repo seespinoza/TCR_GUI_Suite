@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 
-from tkinter import *
+import os # Standard
+import re # Standard
+import threading # Probably not using (Standard)
+import itertools # Standard
+import time # Standard
+from tkinter import * # merge these two imports
 from tkinter import ttk
-from tkinter import filedialog
+from tkinter import filedialog # merge the two imports
+
 from PIL import Image as Imag
 from PIL import ImageTk
-import os
-import re
-import threading
-import itertools
-import time
+
 
 LARGE_FONT = ('OpenSymbol', 12)
 MEDIUM_FONT = ()
