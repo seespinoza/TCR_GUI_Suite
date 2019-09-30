@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# If Ubuntu install and run docker
+cd -- "$(dirname "$BASH_SOURCE")"
+
+# Check if OS type is linux
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	echo $OSTYPE
 
@@ -16,7 +18,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 
 	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos:latest &> /dev/null
 
-# If UBuntu install and run docker
+# Check if OS type is OSX
 elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo $OSTYPE
 
@@ -26,6 +28,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	else
 		code-select --install
 	fi
+
 	# Download and install brew
 	which -s brew 2> /dev/null
 	if  [[ $? != 0 ]]; then
