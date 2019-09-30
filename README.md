@@ -12,7 +12,7 @@ TCR-dist.
 
 ## Package dependencies
  - Before actually running the software Docker and xQuartz both need to be installed. Installation of these two
-   additional software is automatically performed by the `run.sh` script.
+   additional software is automatically performed by the `run.command` script.
 
 *Note: xQuartz is not necessary on Linux systems.*
 
