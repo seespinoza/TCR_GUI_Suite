@@ -1,21 +1,20 @@
 FROM ubuntu:18.04
 
 # GUI files and File Processing Files
-COPY tkinterSandBox.py /memecos/
+COPY TCR_tool_suite_gui.py /memecos/
+COPY descriptions.py /memecos/
 COPY MEME.png /memecos/
 COPY CIRCOS.png /memecos/
 COPY CT044_BML-BM_TCRB.tsv /test-R/
 COPY basic_circos_matrices_script.R /memecos/circos_output/
 COPY tcr-dist/ /opt/tcr-dist/
+ 
 
 # Circos and meme tar files
 ENV version 0.69-9
 ADD http://circos.ca/distribution/circos-${version}.tgz /tmp/
 ADD http://circos.ca/distribution/circos-tools-0.23.tgz /tmp/
-ADD http://meme-suite.org/meme-software/5.0.5/meme-5.0.5.tar.gz /tmp/
-
-ADD https://www.python.org/ftp/python/2.7.16/Python-2.7.16.tgz /tmp/
-ADD https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs927/ghostpdl-9.27.tar.gz /tmp/
+COPY meme-5.0.5.tar.gz /tmp/
 
 # Make Apt non-interactive
 ARG DEBIAN_FRONTEND=noninteractive
@@ -86,9 +85,10 @@ RUN cd /opt/ \
     && mv meme-5.0.5 meme  && cd meme \
     && ./configure --prefix=/opt/meme  --enable-build-libxml2 --enable-build-libxslt  --with-url=http://meme-suite.org \
     && make \
-    && make install 
+    && make install \
+    && mkdir /memecos/meme_out 
 
-# Install tcr dist dependencies
+# Install tcr dist dependancies
 RUN apt-get update \
     && apt-get install -y python python-numpy python-scipy python-matplotlib python-pip \
     && pip install -U scikit-learn \
@@ -109,4 +109,4 @@ USER developer
 ENV HOME /home/developer
 
 ENTRYPOINT ["/usr/bin/python3"]
-CMD ["memecos/tkinterSandBox.py"] 
+CMD ["memecos/TCR_tool_suite_gui.py"] 
