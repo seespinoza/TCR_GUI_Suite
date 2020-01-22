@@ -179,11 +179,11 @@ class MEMEStart(Frame):
         # Run MEME
         siteVar = site.get().split('(')[1][:-1]
         os.system('mkdir /temp_meme_out; cp ' + filePath.get() + ' /temp_meme_out')
-
+        newFilePath = '/temp_meme_out/' + filePath.get().split('/')[-1:]
         memeOutDir = '/memecos/temp_meme_out'
 
         memeCMD = '"./opt/meme/bin/meme -oc ' + memeOutDir + ' -objfun ' + disMode.get() + ' -' \
-                  + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get() + '"'
+                  + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + newFilePath + '"'
 
         os.system(DOCKER_CMD + memeCMD)
 
