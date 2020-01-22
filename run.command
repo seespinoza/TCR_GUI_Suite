@@ -80,9 +80,9 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	
 	# Update docker image (Change this to a try and catch statement in-case software is being
         # run offline.
-	sudo docker pull seespinoza/memecos:latest
+	docker pull seespinoza/memecos:latest
 
-	sudo ./TCR_tool_suite_gui.py
+	./TCR_tool_suite_gui.py
 
 
 fi
