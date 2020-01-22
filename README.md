@@ -1,6 +1,6 @@
 # TCR Analysis Tool Suite
 
-This Python script was created as a GUI-graphical wrapper for command-line tools
+This Python script was created as a graphical wrapper for command-line tools
 used to visualize TCR repertoire data. Currently this software supports MEME, Circos,and 
 TCR-dist.
 
