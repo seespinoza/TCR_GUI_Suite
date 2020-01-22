@@ -66,7 +66,11 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install --build-from-source python
 		python3 -c "import tkinter; tkinter.Tcl().eval('info patchlevel')"
 	else
-		echo "python3 is already installed."
+		echo "installing python3"
+                cp -f python-with-tcl.rb /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/python.rb
+                HOMEBREW_NO_AUTO_UPDATE=1 brew install --build-from-source python
+                python3 -c "import tkinter; tkinter.Tcl().eval('info patchlevel')"
+
 	fi 
 
 	
