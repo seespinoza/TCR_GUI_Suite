@@ -11,7 +11,7 @@ from PIL import ImageTk
 
 from descriptions import Desc
 
-DOCKER_CMD = 'docker run -it -v /:/home seespinoza/memecos:latest /bin/bash -c '
+DOCKER_CMD = 'docker run -it -v ~:/home/ seespinoza/memecos:latest /bin/bash -c '
 
 # Global functions
 def pop_up_msg(text_desc):
@@ -178,7 +178,7 @@ class MEMEStart(Frame):
 
         # Run MEME
         siteVar = site.get().split('(')[1][:-1]
-        memeOutDir = os.getcwd() + '/temp_meme_out'
+        memeOutDir = '/home' + os.getcwd() + '/temp_meme_out'
 
         memeCMD = '"./opt/meme/bin/meme -oc ' + memeOutDir + ' -objfun ' + disMode.get() + ' -' \
                   + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get() + '"'
