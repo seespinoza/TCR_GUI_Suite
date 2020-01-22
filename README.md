@@ -11,10 +11,11 @@ TCR-dist.
    The Tool Suite should be compatible with most Linux systems.
 
 ## Package dependencies
- - Before actually running the software Docker and xQuartz both need to be installed. Installation of these two
-   additional software is automatically performed by the `run.command` script.
+ - This software requires installing several different software packages in order to run as intended.
+   For OSX this includes Xcode, Homebrew, and Homebrew Cask. Python libraries tkinter and Pillow will also
+   be installed.
 
-*Note: xQuartz is not necessary on Linux systems.*
+*Note: The program itself will download all the packages necessary to run.*
 
 ## SOFTWARE INSTALLATION
 
@@ -22,11 +23,11 @@ TCR-dist.
  1) Download the GitHub repository by pressing the green button in the upper right-hand corner that says `Clone or download`.
     Choose `Download ZIP`.
 
- 2) Once you have opened the folder, double click on the `run.command` file to run the Tool Suite.
+ 2) Once you have opened the folder, right click on the `run.command` file and click `Open` to run the Tool Suite.
     Make sure you have a stable internet connection the first time running the software.
 
 *The software may take some time to finish running the first time since some additional software dependencies need to be installed
- Docker, xQuartz, etc)*
+ Docker, Homebrew, etc)*
 ## Ubuntu Users
  1) Download the GitHub repository: `git clone https://github.com/seespinoza/TCR_GUI_Suite.git`
  2) Run `./run.command`.
