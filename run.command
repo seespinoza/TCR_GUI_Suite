@@ -17,7 +17,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 	# update docker image
 	sudo docker pull seespinoza/memecos:latest
 
-	sudo docker run -e DISPLAY=$DISPLAY --net=host -v ~:/home/developer/ seespinoza/memecos:latest &> /dev/null
+	sudo ./TCR_tool_suite_gui.py
 
 # Check if OS type is OSX
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -36,27 +36,11 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 		echo "installing Homebrew"
 		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 	else
-		echo "brew is already installed."
-	fi
-
-	socat -v 2> /dev/null
-	if [[ $? != 0 ]]; then
-		echo "installing socat"
-		brew install socat
-	else
-		echo "socat is already installed."
+		echo "Brew is already installed. Checking for updates."
+		brew update
 	fi
 	
-	# Install xquartz
-	open -a Xquartz
-	if [[ $? != 0 ]]; then
-		echo "installing xquartz"
-		brew install xquartz
-		open -j Xquartz
-	else
-		echo "xquartz already installed"
-	fi
-
+	# Download and install cask
 	brew info brew-cask 2> /dev/null
 	if [[ $? != 0 ]]; then
 		echo "installing Homebrew Cask"
@@ -65,6 +49,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 		echo "cask is already installed"
 	fi
 
+	# Download and install docker
 	docker -v 2> /dev/null
 	if [[ $? != 0 ]]; then
 		echo "installing Docker"
@@ -72,12 +57,19 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 	else
 		echo "docker is already installed"
 	fi
+
+	# Download and install python dependencies
+	python3 --version 2> /dev/null
+	if [[ $? != 0 ]]; then
+		echo "installing python3"
+		cp -f python-with-tcl.rb /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/python.rb
+		HOMEBREW_NO_AUTO_UPDATE=1 brew install --build-from-source python
+		python3 -c "import tkinter; tkinter.Tcl().eval('info patchlevel')"
+	else
+		echo "python3 is already installed."
+	fi 
+
 	
-	socat TCP-LISTEN:6000,reuseaddr,fork UNIX-CLIENT:\"$DISPLAY\" &
-
-	defaults write org.macosforge.xquartz.X11.plist nolisten_tcp 0
-
-	IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
 	
 	open /Applications/Docker.app
 	
@@ -85,6 +77,8 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
         # run offline.
 	sudo docker pull seespinoza/memecos:latest
 
-	sudo docker run -e DISPLAY=${IP}:0 -v ~:/home/developer/ seespinoza/memecos:latest &> /dev/null
+	sudo ./TCR_tool_suite_gui.py
+
+
 fi
 
