@@ -11,6 +11,7 @@ from PIL import ImageTk
 
 from descriptions import Desc
 
+DOCKER_CMD = 'docker run -it -v /home:/home seespinoza/memecos:latest /bin/bash -c '
 
 # Global functions
 def pop_up_msg(text_desc):
@@ -108,10 +109,12 @@ class FUSE_GUI(Tk):
         Tk.__init__(self, *args, **kwargs)
         Tk.wm_title(self, 'MEMEcos')
         Tk.wm_geometry(self, '750x500')
+
         container = Frame(self)
         container.pack(side='top', fill='both', expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
+
 
         self.frames = {}
 
@@ -130,6 +133,7 @@ class FUSE_GUI(Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
+
         # Change window size depending on page shown
         if cont.__name__ == 'StartPage':
             Tk.wm_geometry(self, '750x500')
@@ -146,13 +150,13 @@ class StartPage(Frame):
         label.pack(pady=0,padx=0)
 
         # Visit MEME button
-        self.photoM = PhotoImage(file='/memecos/MEME.png')
+        self.photoM = PhotoImage(file='MEME.png')
         MEMEButton = Button(self, text='Visit MEME', command=lambda: controller.show_frame(MEMEStart),
                             height=150, width=500, image=self.photoM)
         MEMEButton.pack()
 
         # Visit Circos button
-        self.photoC = PhotoImage(file='/memecos/CIRCOS.png')
+        self.photoC = PhotoImage(file='CIRCOS.png')
         CIRCOSButton = Button(self, text='Visit Circos', command=lambda: controller.show_frame(CircosStart),
                               height=150, width=500, image=self.photoC)
         CIRCOSButton.pack()
@@ -174,8 +178,12 @@ class MEMEStart(Frame):
 
         # Run MEME
         siteVar = site.get().split('(')[1][:-1]
-        os.system('./opt/meme/bin/meme -oc /memecos/meme_out -objfun ' + disMode.get() + ' -'
-                  + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get())
+        memeOutDir = os.getcwd() + '/temp_meme_out'
+
+        memeCMD = '"./opt/meme/bin/meme -oc ' + memeOutDir + ' -objfun ' + disMode.get() + ' -' \
+                  + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get() + '"'
+
+        os.system(DOCKER_CMD + memeCMD)
 
         increase_loadbar(loading_elements[0], 50)
 
@@ -215,6 +223,7 @@ class MEMEStart(Frame):
     def __init__(self, parent, controller):
 
         Frame.__init__(self, parent)
+
 
         # Motif discovery label frame
         motifDiscovery = ttk.LabelFrame(self, text='Motif discovery mode')
@@ -322,13 +331,6 @@ class MEMEStart(Frame):
                                    command=lambda: self.decreaseArrow(self.noMotifVar))
         noMotifButtonDown.grid(row=1, column=2, sticky='w')
 
-
-        # Run MEME Button
-        runMeme = ttk.Button(self, text='Run MEME', command=lambda: self.run_MEME(self.disModeVar, self.alphaVar,
-                                                                                  self.filePathVar, self.siteVar,
-                                                                                  self.noMotifVar))
-        runMeme.grid(row=1000, column=0, pady=20, sticky='w')
-
         # Motif width Label Frame
         widthMotif = ttk.LabelFrame(self, text='Motif width')
         widthMotif.grid(row=6, column=0, padx=2, pady=2, sticky='w')
@@ -345,6 +347,12 @@ class MEMEStart(Frame):
 
         motifWidthReg = self.register(num_only)
         motifWidthEntry.config(validate='key', validatecommand=(motifWidthReg, '%P'))
+
+        # Run MEME Button
+        runMeme = ttk.Button(self, text='Run MEME', command=lambda: self.run_MEME(self.disModeVar, self.alphaVar,
+                                                                                  self.filePathVar, self.siteVar,
+                                                                                  self.noMotifVar))
+        runMeme.grid(row=1000, column=0, pady=20, sticky='w')
 
         # Back home button at bottom of page
         backHomeMEME = ttk.Button(self, text='Back to Home', command=lambda: controller.show_frame(StartPage))
@@ -363,89 +371,6 @@ class CircosStart(Frame):
             os.system('cp ' + outputDir + '*.svg ' + dirName.name)
         elif dirName.name[-3:] == 'png':
             os.system('cp ' + outputDir + '*.png ' + dirName.name)
-
-
-    def edit_Ideogram(self, labelSize, labelOr, ideoThick, labelPos):
-        ideoPath = '/opt/circos/etc/'
-        os.system('sudo chmod -R 777 /opt/')
-        os.system('cp ' + ideoPath + 'ideogram.conf ' + ideoPath + 'ideogram1.conf')
-        ideoFile = open(ideoPath + 'ideogram.conf', 'w')
-
-        with open(ideoPath + 'ideogram1.conf', 'r') as f:
-            for line in f:
-                if re.match('^thickness', line):
-                    ideoFile.write('thickness = ' + str(ideoThick.get()) + 'p\n')
-                elif re.match('label_size', line):
-                    ideoFile.write('label_size = ' + str(labelSize.get()) + '\n')
-                elif re.match('label_parallel', line):
-                    ideoFile.write('label_parallel = ' + labelOr.get() + '\n')
-                elif re.match('label_radius', line):
-                    ideoFile.write('label_radius = 1.' + str(labelPos.get()) + 'r\n')
-                else:
-                    ideoFile.write(line)
-        ideoFile.close()
-
-    def edit_Circos_Conf(self, linkSize):
-        circosConfPath = '/opt/circos/etc/'
-        os.system('sudo chmod -R 777 /opt/')
-        os.system('cp ' + circosConfPath + 'circos.conf ' + circosConfPath + 'circos1.conf')
-
-        confFile = open(circosConfPath + 'circos.conf', 'w')
-
-        with open(circosConfPath + 'circos1.conf', 'r') as f:
-            for line in f:
-                if re.match('show = yes', line):
-                    confFile.write('show = no\n')
-                elif re.match('<rule>', line):
-                    confFile.write(line)
-                    confFile.write('condition = var(size) < ' + str(linkSize.get()) + '\n')
-                    confFile.write('show = no\n</rule>\n')
-
-                    # Might need one more
-                    next(f)
-                    next(f)
-                    next(f)
-                else:
-                    confFile.write(line)
-        confFile.close()
-
-    def bashScript(self, pathVar):
-
-        # Circos Tools Path
-        cTools = '/opt/circos-tools/tools/tableviewer'
-        cPath = '/opt/circos'
-
-        os.chdir('/memecos/circos_output/')
-        os.system('sudo cp ' + pathVar.get() + ' .')
-
-        # Run R script to convert TSV file to txt
-        os.system('sudo Rscript basic_circos_matrices_script.R')
-
-        TSVfile = pathVar.get().split('/')[-1][:-4] + '.txt'
-        TSVHead = TSVfile[:-4]
-
-        # Format txt file
-        os.system("sudo sed '1s/^/DATA /' " + TSVfile + " | sudo tee " + TSVfile + ".tmp")
-        os.system('sudo mv ' + TSVfile + ".tmp " + TSVfile)
-
-        # Parse .txt file using circos-tools
-        os.system('sudo cat ' + TSVfile + ' | perl ' + cTools + '/bin/parse-table | sudo tee ' + TSVHead + '.parsed')
-
-        os.system('sudo cat ' + TSVHead + '.parsed | perl ' + cTools + '/bin/make-conf -dir ' + cTools + '/data')
-        os.system('sudo cp ' + cTools + '/data/all.conf ' + cTools + '/data/colors.conf')
-
-        os.system('sudo cp ' + cTools + '/data/* ' + cPath + '/data')
-        os.system('sudo cp ' + cTools + '/etc/* ' + cPath + '/etc')
-
-        try:
-            # Remove excess .parsed and .tsv files
-            os.system('sudo rm ' + TSVHead + '.parsed ' + TSVfile + ' ' + TSVHead + '.tsv')
-
-            # Remove old circos plot images
-            os.system('sudo rm /memecos/circos_output/img/*')
-        except:
-            print('no files to delete')
-
 
     def run_Circos(self):
 
@@ -467,22 +392,17 @@ class CircosStart(Frame):
             self.circosStatus.set('')
             self.runStatusLabel.config(bg='#d9d9d9')
 
-            # Run Circos
-            self.bashScript(self.cirFilePathVar)
+            os.system(DOCKER_CMD + '"python3 /memecos/circos.py -i ' + self.cirFilePathVar.get() +
+                      ' -s ' + str(self.labelSize.get()) + ' -o ' + self.labelOri.get() + ' -t ' +
+                      str(self.ideoThickness.get()) + ' -l ' + str(self.labelPosition.get()) +
+                      ' -i ' + str(self.linkSize.get()) + ' -c ' + os.getcwd() + '"')
+
+            print(DOCKER_CMD + '"python3 /memecos/circos.py -i ' + self.cirFilePathVar.get() +
+                      ' -s ' + str(self.labelSize.get()) + ' -o ' + self.labelOri.get() + ' -t ' +
+                      str(self.ideoThickness.get()) + ' -l ' + str(self.labelPosition.get()) +
+                      ' -i ' + str(self.linkSize.get()) + ' -c ' + os.getcwd() + '"')
 
             increase_loadbar(loading_elements[0])
-
-            # Edit ideogram.conf file
-            self.edit_Ideogram(self.labelSize, self.labelOri, self.ideoThickness, self.labelPosition)
-
-            increase_loadbar(loading_elements[0])
-
-            # Edit circos.conf file
-            self.edit_Circos_Conf(self.linkSize)
-
-            increase_loadbar(loading_elements[0])
-
-            os.system('sudo perl /opt/circos/bin/circos -conf /opt/circos/etc/circos.conf -noshow_ticks')
 
             # Destroy the loading screen frame after the process has finished
             loading_elements[1].destroy()
@@ -492,10 +412,9 @@ class CircosStart(Frame):
             restore_current_frame(self)
 
             try:
-                circosPlotDir = '/memecos/circos_output/img/'
-                initFile = self.cirFilePathVar.get().split('/')[-1].split('.')[0]
+                circosPlotDir = os.getcwd() + '/temp_circos_out/tableview.png'
 
-                self.circosPlot = ImageTk.PhotoImage(Imag.open(circosPlotDir + 'tableview.png').resize((1100, 1100),Imag.ANTIALIAS))
+                self.circosPlot = ImageTk.PhotoImage(Imag.open(circosPlotDir).resize((1100, 1100),Imag.ANTIALIAS))
 
                 plotPreviewButton = Button(self.circosPlotFiles, text='Preview Circos Plot in New Window',
                                               command=lambda: pop_up_img(self.circosPlot))
@@ -503,11 +422,12 @@ class CircosStart(Frame):
                 plotPreviewButton.grid(row=0, column=0, pady=2, padx=2, sticky='w')
 
                 plotSaveButton = Button(self.circosPlotFiles, text='Save File',
-                                        command=lambda: self.save_circos_plot(self, initFile),
+                                        command=lambda: self.save_circos_plot(self, circosPlotDir),
                                         bg='medium sea green')
                 plotSaveButton.grid(row=1, column=0, pady=2, padx=2, sticky='w')
 
             except FileNotFoundError:
+                print('error')
                 pass
 
     def __init__(self, parent, controller):
