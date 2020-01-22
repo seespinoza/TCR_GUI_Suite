@@ -11,7 +11,7 @@ from PIL import ImageTk
 
 from descriptions import Desc
 
-DOCKER_CMD = 'docker run -it -v /home:/home seespinoza/memecos:latest /bin/bash -c '
+DOCKER_CMD = 'docker run -it -v /:/home seespinoza/memecos:latest /bin/bash -c '
 
 # Global functions
 def pop_up_msg(text_desc):
