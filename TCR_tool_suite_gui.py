@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 import os
-import re
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 
 from PIL import Image as Imag
 from PIL import ImageTk
+
 
 from descriptions import Desc
 
@@ -183,6 +183,7 @@ class MEMEStart(Frame):
         memeCMD = '"./opt/meme/bin/meme -oc ' + memeOutDir + ' -objfun ' + disMode.get() + ' -' \
                   + alpha.get() + ' -mod ' + siteVar + ' -nmotifs ' + str(motifNo.get()) + ' ' + filePath.get() + '"'
 
+        os.system('sudo mkdir ' + memeOutDir)
         os.system(DOCKER_CMD + memeCMD)
 
         increase_loadbar(loading_elements[0], 50)
