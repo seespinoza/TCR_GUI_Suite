@@ -35,3 +35,18 @@ TCR-dist.
 
 # Docker Page
 https://hub.docker.com/r/seespinoza/memecos
+
+# Thanks
+  This software package was created with the help of my mentor Dr. Dario Ghersi
+  and Ramakanth Venkata.
+# Citations
+
+- MEME
+
+- Circos
+
+# Funding
+
+This project was funded by the Fund for Undergraduate Scholarly Experiences (FUSE) at
+the University of Nebraska Omaha.
+
