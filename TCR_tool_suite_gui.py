@@ -178,8 +178,9 @@ class MEMEStart(Frame):
 
         # Run MEME
         siteVar = site.get().split('(')[1][:-1]
-        os.system('mkdir /temp_meme_out; cp ' + filePath.get() + ' /temp_meme_out')
-        newFilePath = '/temp_meme_out/' + filePath.get().split('/')[-1:]
+        os.system('mkdir temp_meme_out; cp ' + filePath.get() + ' .')
+
+        newFilePath = '/memecos/' + filePath.get().split('/')[-1]
         memeOutDir = '/memecos/temp_meme_out'
 
         memeCMD = '"./opt/meme/bin/meme -oc ' + memeOutDir + ' -objfun ' + disMode.get() + ' -' \
