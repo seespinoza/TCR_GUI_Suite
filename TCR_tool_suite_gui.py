@@ -150,13 +150,13 @@ class StartPage(Frame):
         label.pack(pady=0,padx=0)
 
         # Visit MEME button
-        self.photoM = PhotoImage(file='MEME.png')
+        self.photoM = PhotoImage(file='images/MEME.png')
         MEMEButton = Button(self, text='Visit MEME', command=lambda: controller.show_frame(MEMEStart),
                             height=150, width=500, image=self.photoM)
         MEMEButton.pack()
 
         # Visit Circos button
-        self.photoC = PhotoImage(file='CIRCOS.png')
+        self.photoC = PhotoImage(file='images/CIRCOS.png')
         CIRCOSButton = Button(self, text='Visit Circos', command=lambda: controller.show_frame(CircosStart),
                               height=150, width=500, image=self.photoC)
         CIRCOSButton.pack()
