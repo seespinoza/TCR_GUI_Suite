@@ -64,17 +64,28 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 		echo "installing python3"
 		cp -f python-with-tcl.rb /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/python.rb
 		HOMEBREW_NO_AUTO_UPDATE=1 brew install --build-from-source python
-		python3.8 -c "import tkinter; tkinter.Tcl().eval('info patchlevel')"
 	else
-		echo "installing python3"
-                cp -f python-with-tcl.rb /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/python.rb
-                HOMEBREW_NO_AUTO_UPDATE=1 brew install --build-from-source python
-                python3.8 -c "import tkinter; tkinter.Tcl().eval('info patchlevel')"
-		pip3.8 install Pillow
+		echo "Python already installed."
 
 	fi 
-
 	
+	# Check to see if tkinter is properly installed
+	python3.8 -c "import tkinter; tkinter.Tcl().eval('info patchlevel')"
+	if [[ $? != 0 ]]; then
+		echo "Tkinter not properly installed."
+	else
+		echo "Tkinter properly installed."
+	fi
+
+
+        # Check to see if PIL is installed
+	python3 -c "import PIL"
+        if [[ $? != 0 ]]; then
+		echo "installing Pillow module."
+	        pip3 install Pillow
+	else
+		echo "Pillow already installed."
+	fi	
 	
 	open /Applications/Docker.app
 	
