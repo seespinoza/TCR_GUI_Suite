@@ -14,10 +14,22 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 		echo "docker already installed"
 	fi
 
+	# Check if python3 has pillow
+	python3 -c "import PIL"
+        if [[ $? != 0 ]]; then
+                echo "installing Pillow module."
+                pip3 install Pillow
+        else
+                echo "Pillow already installed."
+        fi
+
+
 	# update docker image
 	sudo docker pull seespinoza/memecos:latest
 
-	sudo ./TCR_tool_suite_gui.py
+
+
+	python3 TCR_tool_suite_gui.py
 
 # Check if OS type is OSX
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -93,7 +105,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
         # run offline.
 	docker pull seespinoza/memecos:latest
 
-	./TCR_tool_suite_gui.py
+	python3 TCR_tool_suite_gui.py
 
 
 fi
