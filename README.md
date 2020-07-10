@@ -41,10 +41,8 @@ https://hub.docker.com/r/seespinoza/memecos
   and Ramakanth Venkata.
 # Citations
 
-- MEME
-
-- Circos
-
+- MEME: Timothy L. Bailey, Mikael Bodén, Fabian A. Buske, Martin Frith, Charles E. Grant, Luca Clementi, Jingyuan Ren, Wilfred W. Li, William S. Noble, "MEME SUITE: tools for motif discovery and searching", Nucleic Acids Research, 37:W202-W208, 2009.
+- Circos: Krzywinski, M., Schein, J., Birol, I., Connors, J., Gascoyne, R., Horsman, D., . . . Marra, M. A. (2009). Circos: An information aesthetic for comparative genomics. Genome Research, 19(9), 1639-1645. doi:10.1101/gr.092759.109
 # Funding
 
 This project was funded by the Fund for Undergraduate Scholarly Experiences (FUSE) at
